@@ -1,37 +1,24 @@
 # Roshni's books
 
-A one-page reading shelf: every book from my Notion **Books** database that has at least 50 words of notes, with its cover. Click a cover to read the notes. Colours after Edward Hopper's *Nighthawks* (1942).
+A one-page reading shelf: books from my Notion **Books** database that have at least 50 words of notes, with covers. Click a cover to read the notes. Colours after Edward Hopper's *Nighthawks* (1942).
 
-The site is plain HTML (`index.html`) that reads `data/books.json`. Nothing talks to Notion while people browse — the notes are copied in only when I choose to update.
+## How it works
 
-## One-time setup
+- `index.html` — the whole site. It reads `data/books.json`.
+- `data/books.json` — the books and notes. Updated by Claude from my Notion (through Claude's Notion connector, no keys), whenever I ask.
+- `scripts/fetch-covers.mjs` — runs on every deploy and downloads a cover for each book (the image in my Notion page if there is one, otherwise Open Library). Books without a cover get a drawn one.
+- `.github/workflows/deploy.yml` — publishes to GitHub Pages on every push to `main`.
 
-1. **Create a Notion integration** — go to <https://www.notion.so/profile/integrations>, click *New integration*, give it read-only content access, and copy the secret (`ntn_…` or `secret_…`).
-2. **Share the Books database with it** — open the Books database in Notion → `•••` → *Connections* → add the integration.
-3. **Store the secret in this repo** — GitHub → *Settings* → *Secrets and variables* → *Actions* → *New repository secret*, name `NOTION_TOKEN`.
-4. **Turn on Pages** — *Settings* → *Pages* → *Source*: **GitHub Actions**.
-5. **Custom domain (optional)** — *Settings* → *Pages* → *Custom domain*: `books.yourdomain.com`, then at your domain registrar add a `CNAME` record: `books` → `roshnisubudhi6.github.io`. Tick *Enforce HTTPS* once it appears.
+## Updating
 
-## Updating the shelf (whenever I want)
+Ask Claude: *"update my books page from Notion"*. It reads the Books database, rewrites `data/books.json`, and pushes — the site redeploys itself.
 
-GitHub → *Actions* → **Deploy books page** → *Run workflow*. It pulls the latest books and notes from Notion, commits them under my name, and redeploys.
+Notes on the site keep my own thoughts, word lists and short quotes; long passages copied from books are condensed rather than reproduced.
 
-Or locally:
+## Custom domain
 
-```bash
-NOTION_TOKEN=ntn_xxx npm run sync   # writes data/books.json and covers/
-npm run serve                       # preview at http://localhost:3000
-git add data covers && git commit -m "Update books" && git push
-```
+Settings → Pages → Custom domain: `books.yourdomain.com`, then add a `CNAME` record at the registrar: `books` → `roshnisubudhi6.github.io`.
 
-## What the sync does
+## Goodreads link
 
-- Skips books whose notes are under 50 words (change with `MIN_WORDS=…`).
-- Drops images, embeds and file blocks from the notes; keeps text, headings, lists, quotes, callouts, tables and highlights.
-- Cover: the first image in the Notion page if there is one, otherwise Open Library. Books with no cover found get a drawn one in the site's palette. Covers are cached in `covers/` — delete a file to fetch it again.
-
-Notes are published exactly as written in Notion, so check that anything long quoted from a book is something you're happy to make public.
-
-## Change the Goodreads link
-
-In `index.html`, find the `<a class="gr"` button and set its `href` to your profile URL.
+In `index.html`, set the `href` of the `<a class="gr"` button to the profile URL.

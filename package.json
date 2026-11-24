@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "sync": "node scripts/sync-notion.mjs",
+    "covers": "node scripts/fetch-covers.mjs",
     "serve": "npx --yes serve ."
   },
   "engines": { "node": ">=20" }
