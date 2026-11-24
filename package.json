@@ -1,0 +1,10 @@
+{
+  "name": "bookspage",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-notion.mjs",
+    "serve": "npx --yes serve ."
+  },
+  "engines": { "node": ">=20" }
+}

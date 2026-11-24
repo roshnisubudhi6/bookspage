@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roshni's Books</title>
+<meta name="description" content="Books Roshni has read, with her notes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+/* VOICE: quiet, late-night, a little lonely; reading alone under fluorescent light.
+   IDEA: Hopper's Nighthawks (1942) — a lit corner diner on a dark street.
+   PICTURE: the title sits inside the glowing diner window; books are lit storefronts.
+   COLOUR and TYPE: night teal and navy, window-glow yellow, brick, mahogany, one red dress.
+     Libre Franklin throughout — plain American gothic, like the Phillies sign.
+   LAYOUT: street-at-night hero band, search, cover grid, notes in diner light. */
+:root{color-scheme:dark;--teal:#1e3a36;--street:#15292a;--navy:#1d2b3c;--green:#2e6b55;--glow:#efe9b0;--cream:#f6f2d8;
+  --brick:#a9482c;--wood:#6a2a1b;--dress:#c43a2c;--aqua:#9fc4b6;--bg:#132326;--ink:#ece8cf;--soft:#9fb8af}
+:root,:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Libre Franklin",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--glow);outline-offset:3px}
+
+/* hero: the diner */
+.hero{position:relative;overflow:hidden;background:
+  linear-gradient(180deg,#8a3a24 0 22%,var(--teal) 22% 100%);padding-bottom:0}
+.hero .wrap{position:relative}
+.sign{display:inline-block;background:var(--wood);color:#d9b45a;font-weight:800;letter-spacing:.18em;font-size:clamp(13px,1.4vw,16px);padding:10px 22px;margin-left:clamp(0px,6vw,80px);border-radius:4px 4px 0 0}
+.window{position:relative;background:linear-gradient(100deg,#e3dc9a 0%,var(--glow) 40%,#f7f3c9 100%);color:var(--navy);
+  border:10px solid #18332f;border-bottom:0;border-radius:90px 0 0 0;padding:clamp(28px,5vw,64px) clamp(22px,5vw,72px) clamp(40px,6vw,80px);
+  box-shadow:0 0 90px 10px rgba(239,233,176,.25)}
+.window::after{content:"";position:absolute;top:0;bottom:0;right:22%;width:8px;background:#18332f;opacity:.85}
+.hero h1{font-weight:300;font-size:clamp(40px,6vw,72px);line-height:1.02;margin:0;letter-spacing:-.01em;text-wrap:balance;max-width:12ch}
+.hero h1 b{font-weight:800}
+.hero p{margin:14px 0 26px;font-size:17px;max-width:46ch;color:#3b4a50}
+.gr{display:inline-flex;align-items:center;gap:14px;min-height:60px;padding:10px 26px 10px 14px;border-radius:6px;background:var(--teal);color:var(--glow);text-decoration:none;
+  box-shadow:0 6px 0 #0f2421,0 14px 30px -8px rgba(30,58,54,.55);transition:transform .15s,box-shadow .15s}
+.gr:hover{transform:translateY(-2px);background:var(--green);box-shadow:0 8px 0 #0f2421,0 18px 36px -8px rgba(30,58,54,.6)}
+.gr:active{transform:translateY(4px);box-shadow:0 2px 0 #0f2421}
+.gr .ic{width:40px;height:40px;border-radius:50%;background:var(--glow);display:grid;place-items:center;flex:none}
+.gr .ic svg{width:22px;height:22px}
+.gr .lbl{display:flex;flex-direction:column;line-height:1.15}
+.gr .lbl small{font-size:13px;color:var(--aqua);font-weight:400}
+.gr .lbl strong{font-size:18px;font-weight:800}
+.gr .arr{font-size:20px;margin-left:4px;transition:transform .15s}.gr:hover .arr{transform:translateX(3px)}
+@media(prefers-reduced-motion:reduce){.gr,.gr .arr{transition:none}}
+.counter{height:28px;background:linear-gradient(var(--wood),#4f1f14);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.ledge{height:20px;background:var(--green)}
+
+/* search */
+.find{padding:28px max(5vw,16px) 0}
+.search{width:100%;max-width:420px;min-height:48px;border:1px solid #3c5a55;border-radius:4px;padding:0 16px;font:16px "Libre Franklin";background:var(--street);color:var(--ink)}
+.search::placeholder{color:var(--soft)}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:clamp(18px,2.4vw,32px)}
+.book{all:unset;cursor:pointer;display:block}
+.book:focus-visible .cover{outline:3px solid var(--glow);outline-offset:4px}
+.cover{position:relative;aspect-ratio:2/3;border-radius:2px 4px 4px 2px;overflow:hidden;box-shadow:0 14px 28px -14px rgba(0,0,0,.7);transition:transform .25s ease,box-shadow .25s}
+.book:hover .cover{transform:translateY(-6px);box-shadow:0 18px 40px -12px rgba(239,233,176,.28)}
+.cover svg,.cover img{position:absolute;inset:0;width:100%;height:100%}
+.cover img{object-fit:cover;background:var(--navy)}
+.cover::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:rgba(0,0,0,.2);z-index:2}
+.cover .t{position:absolute;z-index:3;left:16px;right:12px;top:16px;font:800 clamp(16px,1.5vw,19px)/1.12 "Libre Franklin";text-wrap:balance;overflow-wrap:anywhere}
+.cover .a{position:absolute;z-index:3;left:16px;right:12px;bottom:12px;font:400 13px/1.2 "Libre Franklin";letter-spacing:.02em}
+.empty,.wait{grid-column:1/-1;text-align:center;padding:60px 0;font-size:18px;color:var(--soft)}
+
+/* notes sheet: diner light */
+.scrim{position:fixed;inset:0;background:rgba(8,18,20,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(720px,100%);background:#f7f3d6;color:#1f2a30;z-index:21;transform:translateX(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;box-shadow:-20px 0 60px -10px rgba(0,0,0,.6)}
+.open .scrim{opacity:1;pointer-events:auto}.open .sheet{transform:none}
+@media(prefers-reduced-motion:reduce){.sheet,.scrim,.cover{transition:none}}
+.shead{display:grid;grid-template-columns:100px minmax(0,1fr) auto;gap:18px;padding:22px;border-bottom:6px solid var(--wood);align-items:start}
+.shead .cover{width:100px}
+.shead .cover .t{font-size:11px;left:10px;top:10px}.shead .cover .a{font-size:10px;left:10px}
+.shead h2{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.1;margin:0 0 4px;text-wrap:balance}
+.shead .by{font-size:16px;color:var(--brick);margin:0 0 10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12.5px;padding:3px 10px;border-radius:3px;background:#e9e3b8}
+.x{width:44px;height:44px;border-radius:50%;border:1px solid #1f2a30;background:transparent;cursor:pointer;font-size:22px;line-height:1;color:#1f2a30}
+.sbody{overflow-y:auto;padding:8px 26px 48px;flex:1}
+.notes{max-width:64ch}
+.notes h3,.notes h4{font-weight:800;font-size:21px;line-height:1.2;margin:30px 0 8px;color:var(--teal)}
+.notes h4{font-size:17px}
+.notes p{margin:0 0 14px}
+.notes blockquote{margin:18px 0;padding:4px 0 4px 18px;border-left:4px solid var(--dress);font-style:italic}
+.notes mark{background:#e8d877;color:inherit;padding:0 2px}
+.notes .callout{background:#ece6bd;border-radius:4px;padding:14px 16px;margin:16px 0}
+.notes table{border-collapse:collapse;font-size:14.5px;margin:16px 0;width:100%}
+.notes td,.notes th{border:1px solid #d9d2a6;padding:10px;vertical-align:top}
+.notes ul,.notes ol{padding-left:22px}
+.notes hr{border:0;border-top:1px solid #d9d2a6;margin:24px 0}
+.state{padding:40px 0;font-size:18px;color:#6b6a58}
+.state a{color:var(--brick)}
+@media(max-width:600px){
+  .window{border-radius:50px 0 0 0}.window::after{display:none}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .search{max-width:none}
+  .shead{grid-template-columns:70px minmax(0,1fr) auto;gap:12px;padding:16px}
+  .shead .cover{width:70px}.shead .cover .t,.shead .cover .a{display:none}
+  .sbody{padding:4px 18px 40px}
+}
+</style>
+</head>
+<body>
+<header class="hero band">
+  <div class="wrap">
+    <div class="window">
+      <h1>Books I've <b>sat up late</b> with</h1>
+      <p>The lines I underlined, the words I learned and what stayed with me afterwards.</p>
+      <!-- Goodreads: put your profile URL in href below -->
+      <a class="gr" id="gr" href="https://www.goodreads.com/" target="_blank" rel="noopener">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#1e3a36" stroke-width="2" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3 5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5Z"/><path d="M12 6.5v13"/></svg></span>
+        <span class="lbl"><small>See what I'm reading now</small><strong>Follow me on Goodreads</strong></span><span class="arr" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+  <div class="counter"></div><div class="ledge"></div>
+</header>
+
+<div class="find"><div class="wrap"><input class="search" id="q" type="search" placeholder="Search for a book or author" aria-label="Search books"></div></div>
+
+<main class="band"><div class="wrap"><div class="grid" id="grid"></div></div></main>
+
+<div id="layer">
+  <div class="scrim" id="scrim"></div>
+  <aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle" aria-hidden="true">
+    <div class="shead">
+      <div class="cover" id="sCover"></div>
+      <div><h2 id="sTitle"></h2><p class="by" id="sBy"></p><div class="tags" id="sTags"></div></div>
+      <button class="x" id="close" aria-label="Close notes">×</button>
+    </div>
+    <div class="sbody"><div class="notes" id="notes"></div></div>
+  </aside>
+</div>
+
+<script>
+{
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let books = [], query = "";
+const P = {teal:"#1e3a36",green:"#2e6b55",navy:"#1d2b3c",brick:"#a9482c",wood:"#6a2a1b",glow:"#efe9b0",aqua:"#9fc4b6",dress:"#c43a2c",cream:"#f6f2d8"};
+const hash = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
+const SCHEMES = [
+  {bg:"teal",win:"glow",band:"wood",acc:"dress",fg:"cream"},
+  {bg:"navy",win:"glow",band:"green",acc:"brick",fg:"cream"},
+  {bg:"brick",win:"navy",band:"teal",acc:"glow",fg:"cream"},
+  {bg:"glow",win:"teal",band:"wood",acc:"dress",fg:"navy"},
+  {bg:"green",win:"glow",band:"navy",acc:"brick",fg:"cream"},
+  {bg:"aqua",win:"navy",band:"wood",acc:"glow",fg:"navy"},
+  {bg:"wood",win:"glow",band:"teal",acc:"aqua",fg:"cream"},
+  {bg:"cream",win:"green",band:"brick",acc:"navy",fg:"navy"}
+];
+const scheme = b => SCHEMES[hash(b.id) % SCHEMES.length];
+function coverSVG(b){
+  const h = hash(b.id), c = scheme(b), k = (h >> 4) % 3;
+  const wy = 150 + (h >> 8) % 40, ww = 120 + (h >> 12) % 50, wx = (h >> 16) % 2 ? 200 - ww : 0;
+  const shapes = [
+    // lit window with counter
+    `<rect x="${wx}" y="${wy}" width="${ww}" height="80" fill="${P[c.win]}"/><rect x="0" y="${wy+80}" width="200" height="14" fill="${P[c.band]}"/><rect x="${wx+ww-24}" y="${wy-6}" width="6" height="100" fill="${P[c.bg]}" opacity=".55"/>`,
+    // building facade with windows
+    `<rect x="0" y="${wy}" width="200" height="${300-wy}" fill="${P[c.band]}"/>${[20,80,140].map(x=>`<rect x="${x}" y="${wy+24}" width="40" height="54" fill="${P[c.win]}"/>`).join("")}<rect x="0" y="${wy+100}" width="200" height="8" fill="${P[c.acc]}"/>`,
+    // long curved glass and wedge of light
+    `<path d="M0 ${wy}H200V${wy+70}H40Q0 ${wy+70} 0 ${wy+30}Z" fill="${P[c.win]}"/><path d="M0 ${wy+70}H200V300H0Z" fill="${P[c.band]}"/><path d="M30 ${wy+70}L200 ${wy+70}L200 300L0 300Z" fill="${P[c.win]}" opacity=".18"/><circle cx="${wx+40}" cy="${wy+48}" r="9" fill="${P[c.acc]}"/>`
+  ];
+  return `<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="300" fill="${P[c.bg]}"/>${shapes[k]}</svg>`;
+}
+function coverHTML(b){
+  if (b.cover) return `<img src="${esc(b.cover)}" alt="" loading="lazy">`;
+  const fg = P[scheme(b).fg];
+  return coverSVG(b) + `<div class="t" style="color:${fg}">${esc(b.name)}</div><div class="a" style="color:${fg}">${esc(b.author || b.kind)}</div>`;
+}
+
+function renderGrid(){
+  const q = query.trim().toLowerCase();
+  const list = books.filter(b => !q || (b.name + " " + b.author).toLowerCase().includes(q));
+  if (!books.length) { $("#grid").innerHTML = `<div class="empty">The shelf is empty — run “Update books from Notion” in GitHub Actions.</div>`; return; }
+  if (!list.length) { $("#grid").innerHTML = `<div class="empty">Nothing on the shelf matches “${esc(query)}”.</div>`; return; }
+  $("#grid").innerHTML = list.map(b => `<button class="book" data-id="${esc(b.id)}" aria-label="${esc(b.name)}, read notes"><div class="cover">${coverHTML(b)}</div></button>`).join("");
+}
+$("#q").oninput = e => { query = e.target.value; renderGrid(); };
+$("#grid").onclick = e => { const b = e.target.closest(".book"); if (b) openBook(b.dataset.id, b); };
+
+/* ---- sheet ---- */
+let lastFocus = null, current = "";
+function setOpen(on){
+  document.body.classList.toggle("open", on);
+  $("#sheet").setAttribute("aria-hidden", String(!on));
+  document.body.style.overflow = on ? "hidden" : "";
+  if (on) $("#close").focus(); else lastFocus?.focus();
+}
+async function openBook(id, from){
+  const b = books.find(x => x.id === id); if (!b) return;
+  lastFocus = from; current = id;
+  $("#sCover").innerHTML = coverHTML(b);
+  $("#sTitle").textContent = b.name;
+  $("#sBy").textContent = b.author || b.kind || "";
+  $("#sTags").innerHTML = b.tags.filter(Boolean).map(t => `<span class="tag">${esc(t)}</span>`).join("");
+  const notes = $("#notes");
+  notes.innerHTML = `<div class="state">Pouring the coffee…</div>`;
+  setOpen(true);
+  notes.innerHTML = b.notes || `<div class="state">No notes on this one yet.</div>`;
+  $(".sbody").scrollTop = 0;
+}
+$("#close").onclick = () => setOpen(false);
+$("#scrim").onclick = () => setOpen(false);
+addEventListener("keydown", e => {
+  if (!document.body.classList.contains("open")) return;
+  if (e.key === "Escape") setOpen(false);
+  if (e.key === "Tab") {
+    const f = [...$("#sheet").querySelectorAll("button,a[href]")]; const first = f[0], last = f[f.length-1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+
+fetch("data/books.json", {cache: "no-cache"}).then(r => r.json()).then(d => { books = Array.isArray(d) ? d : []; renderGrid(); })
+  .catch(() => { $("#grid").innerHTML = `<div class="empty">Couldn't load the shelf. Try refreshing.</div>`; });
+$("#grid").innerHTML = `<div class="wait">Laying out the shelf…</div>`;
+}
+</script>
+</body>
+</html>

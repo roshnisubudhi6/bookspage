@@ -1,0 +1,60 @@
+name: Deploy books page
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      sync:
+        description: "Pull the latest books and notes from Notion before deploying"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sync }}
+        with:
+          node-version: 20
+
+      - name: Update books from Notion
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sync }}
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: node scripts/sync-notion.mjs
+
+      - name: Commit the update in your name
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sync }}
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git add data covers
+          if git diff --cached --quiet; then
+            echo "No changes in Notion since the last update."
+          else
+            git commit -m "Update books from Notion"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
